@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTube</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="dark-mode">
+    <aside id="sidebar">
+        <h1 onclick="window.location.href='index.html'">HomeTube</h1>
+        <button id="dark-mode-toggle"><i class="fas fa-sun"></i></button>
+        <section id="history">
+            <h2>History</h2>
+            <select id="history-dropdown">
+                <option value="">-- Select a video --</option>
+            </select>
+            <button id="clear-history">Clear History</button>
+        </section>
+    </aside>
+    <div id="content-area">
+        <header>
+            <input type="text" id="search-input" placeholder="Search YouTube...">
+            <button id="search-button"><i class="fas fa-search"></i></button>
+        </header>
+        <main id="search-results">
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        const videoItems = document.querySelectorAll('.video-item img');
+        videoItems.forEach(img => {
+            img.setAttribute('alt', 'YouTube Video Thumbnail');
+        });
+    </script>
+</body>
+</html>
