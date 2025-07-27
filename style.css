@@ -1,0 +1,315 @@
+:root {
+    --primary-color: #697565; /* Accent color 1 */
+    --secondary-color: #ECDFCC; /* Accent color 2 */
+    --background-color: #1E201E; /* Main background */
+    --sidebar-background: #3C3D37; /* Sidebar background */
+    --text-color-light: #ECDFCC; /* Light text for dark backgrounds */
+    --text-color-dark: #697565; /* Darker text for light backgrounds (not used in dark mode) */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex; /* Use flexbox for overall layout */
+}
+
+#sidebar {
+    width: 100px; /* Increased sidebar width */
+    background-color: var(--sidebar-background);
+    color: var(--text-color-light);
+    padding: 10px;
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    height: 100vh; /* Ensure sidebar takes full viewport height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#sidebar h1 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--secondary-color); /* Use accent 2 for title */
+}
+
+#sidebar button {
+    padding: 5px;
+    background-color: var(--primary-color); /* Accent color 1 background */
+    color: var(--text-color-light); /* Light text */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+#sidebar button:hover {
+    background-color: var(--secondary-color); /* Accent color 2 on hover */
+}
+
+#content-area {
+    flex-grow: 1; /* Allow content area to take remaining space */
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling for content if it overflows */
+}
+
+header {
+    background-color: transparent;
+    color: var(--text-color-light);
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+header input[type="text"] {
+    padding: 10px 15px; /* Increased vertical padding for height */
+    width: 90%; /* Further increased width */
+    border: none;
+    border-radius: 20px;
+    margin-right: 10px; /* Add some space between input and button */
+    color: var(--text-color-light); /* Light text color */
+    background-color: #3C3D37; /* Sidebar background color */
+    border: 1px solid var(--secondary-color); /* Accent color 2 for border */
+}
+
+header button {
+    background-color: var(--primary-color); /* Accent color 1 background */
+    border: none;
+    color: var(--text-color-light);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    margin-left: 5px; /* Add some space between input and button */
+}
+
+header button:hover {
+    background-color: var(--secondary-color); /* Accent color 2 on hover */
+}
+
+main {
+    /* Removed padding: 10px; */
+}
+
+#search-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center items horizontally */
+    align-items: flex-start; /* Align items to the start of the cross axis */
+    gap: 10px; /* Use gap for spacing */
+}
+
+.video-item {
+    width: 300px; /* Fixed width for flexbox layout */
+    margin: 10px; /* Margin for spacing */
+    border: none;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.video-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.video-item img {
+    width: 100%; /* Make image fill the container */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the area without distortion */
+    border-radius: 5px;
+    display: block; /* Ensure it behaves as a block element */
+    border: none; /* Remove any default border */
+    box-shadow: none; /* Remove any default box-shadow */
+}
+
+.video-item h3 {
+    margin-top: 1px; /* Further reduced margin for less space */
+    font-size: 1rem;
+    text-align: left;
+    padding: 0 5px;
+    color: var(--text-color-light); /* Light text for titles */
+}
+
+.video-item p {
+    color: var(--primary-color); /* Use accent 1 for channel/view count */
+    font-size: 0.8rem;
+    text-align: left;
+    padding: 0 5px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+    backdrop-filter: blur(5px); /* Blur effect */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--sidebar-background); /* Use sidebar background for modal */
+    margin: auto;
+    padding: 20px;
+    border: 1px solid var(--primary-color); /* Use accent 1 for border */
+    width: 80%;
+    max-width: 800px; /* Max width for the modal */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-content iframe {
+    width: 100%;
+    height: 400px; /* Adjust height as needed */
+    border: none;
+    border-radius: 5px;
+}
+
+.close-button {
+    color: var(--text-color-light); /* Use light text color for close button */
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--secondary-color); /* Accent color 2 on hover */
+    text-decoration: none;
+}
+
+/* Hide search results when modal is active */
+body.modal-open .search-results {
+    display: none;
+}
+
+/* Adjust sidebar and content area when modal is open */
+body.modal-open #sidebar,
+body.modal-open #content-area {
+    opacity: 0.5; /* Dim the background */
+    pointer-events: none; /* Prevent interaction with background */
+}
+
+/* Load More Button Styles */
+.load-more-button {
+    display: block; /* Make it a block element */
+    margin: 20px auto; /* Center the button and add vertical space */
+    padding: 10px 20px;
+    background-color: var(--primary-color); /* Use primary accent color */
+    color: var(--text-color-light);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    position: sticky; /* Make it sticky */
+    bottom: 0; /* Stick to the bottom */
+    width: 100%; /* Occupy full width of its container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.load-more-button:hover {
+    background-color: var(--secondary-color); /* Use secondary accent color on hover */
+}
+
+.load-more-button:disabled {
+    background-color: var(--sidebar-background); /* Dimmed color when disabled */
+    cursor: not-allowed;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 10px 0;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    #sidebar h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    #sidebar button {
+        display: none; /* Hide dark mode toggle on mobile for now */
+    }
+
+    #content-area {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    header input[type="text"] {
+        width: 95%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    header button {
+        width: 40px;
+        height: 40px;
+        margin-left: 0;
+    }
+
+    #search-results {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Smaller min width for mobile */
+        width: 100%;
+        padding: 5px;
+    }
+
+    .video-item {
+        width: 100%; /* Make video items fluid */
+    }
+
+    .modal-content iframe {
+        height: 250px; /* Adjust height for smaller screens */
+    }
+}

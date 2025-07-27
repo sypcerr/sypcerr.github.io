@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTube</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="dark-mode">
+    <!-- Password Protection Section -->
+    <div id="password-protection" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: var(--background-color); color: var(--text-color-light); position: fixed; top: 0; left: 0; width: 100%; z-index: 9999;">
+        <h2>Enter Password</h2>
+        <input type="password" id="password-input" placeholder="Password" style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid var(--secondary-color); background-color: var(--sidebar-background); color: var(--text-color-light);">
+        <button id="password-submit-button" style="padding: 10px 20px; background-color: var(--primary-color); color: var(--text-color-light); border: none; border-radius: 5px; cursor: pointer;">Enter</button>
+        <p id="password-error" style="color: red; margin-top: 10px;"></p>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content-wrapper" style="display: none;">
+        <aside id="sidebar">
+            <h1 onclick="window.location.href='index.html'">HomeTube</h1>
+        </aside>
+        <div id="content-area">
+            <div id="video-player-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <iframe id="youtube-player" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+            <header>
+                <input type="text" id="search-input" placeholder="Search YouTube...">
+                <button id="search-button"><i class="fas fa-search"></i></button>
+            </header>
+            <main id="search-results">
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        const videoItems = document.querySelectorAll('.video-item img');
+        videoItems.forEach(img => {
+            img.setAttribute('alt', 'YouTube Video Thumbnail');
+        });
+    </script>
+</body>
+</html>
