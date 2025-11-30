@@ -1,508 +1,316 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>sypcer's scripts</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link rel="icon" href="https://github.com/sypcerr/scripts/blob/main/images/CBTR.png?raw=true">
-<style>
-  * { box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-  body { margin: 0; background: #0f0f15; color: white; display: flex; min-height: 100vh; overflow: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sypcer's Scripts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .bg-custom {
+            background-color: #0f0f15;
+        }
+        .bg-card {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .border-card {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .shadow-card {
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+        .hover-shadow-card:hover {
+            box-shadow: 0 10px 15px rgba(255, 255, 255, 0.15);
+        }
+        .animated-gradient {
+            background: linear-gradient(90deg, #525253 0%, #525253 43%, #c0c0c0 43%, #c0c0c0 50%, #ffffff 50%, #ffffff 57%, #525253 57%, #525253 100%);
+            background-size: 120% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
 
-  /* Background GIF with blur */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: url('https://wallpapers-clan.com/wp-content/uploads/2024/08/batman-bats-grey-gif-desktop-wallpaper-preview.gif') center/cover no-repeat; /* Using the new GIF */
-    filter: blur(15px) brightness(0.4);
-    z-index: -1;
-  }
+        @keyframes shimmer {
+            0% { background-position: 100% 50%; }
+            100% { background-position: -100% 50%; }
+        }
 
-  /* Sidebar */
-  .sidebar {
-    width: 120px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 10px;
-    border-right: 1px solid rgba(255,255,255,0.1);
-    position: relative; /* Needed for absolute positioning of alert */
-  }
-  .sidebar a {
-    color: white;
-    text-decoration: none;
-    margin: 15px 0;
-    font-size: 1.5rem;
-    transition: transform 0.3s, box-shadow 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px; height: 50px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.05);
-  }
-  .sidebar a:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    color: #a0e0ff;
-  }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-  /* Main content */
-  .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 15px; } /* Adjusted padding for better spacing */
-  h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); text-shadow: 2px 2px 6px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
 
-  .search-bar {
-    padding: 15px;
-    border-radius: 15px;
-    border: none;
-    outline: none;
-    width: 400px;
-    background: rgba(255,255,255,0.1);
-    color: white;
-    margin-bottom: 28px;
-    font-size: 1.1rem;
-    /* Removed typewriter cursor styles */
-    /* caret-color: #00ff00; */
-    /* animation: blink-caret .75s step-end infinite; */
-  }
+        .copied-animation {
+            animation: copied 0.6s ease;
+        }
 
-  /* Removed keyframes for the blinking cursor */
-  /* @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: #00ff00; }
-  } */
+        @keyframes copied {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
-.hub-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Max 3 items per row */
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px; /* Center the container */
-    margin: 0 auto; /* Center the container */
-    justify-content: center; /* Keep one justify-content */
-    margin: 0 auto; /* Center the container */
-    max-height: calc(100vh - 200px); /* More flexible height */
-    padding-bottom: 40px;
-    overflow-y: auto; /* Added scrollbar */
-}
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
 
-/* Hide scrollbar for Webkit browsers */
-.hub-container::-webkit-scrollbar {
-    display: none;
-}
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: animate 12.5s linear infinite;
+            bottom: -150px;
+        }
 
-  .script-card {
-    background: rgba(255,255,255,0.1); /* Slightly increased opacity */
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid rgba(255,255,255,0.15); /* Added subtle border */
-    transition: transform 0.35s ease-in-out, box-shadow 0.3s ease-out, opacity 0.5s ease-in-out; /* Updated transition */
-    perspective: 1000px; /* Kept from original */
-    transform-style: preserve-3d; /* Kept from original */
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
 
-    /* New styles from CodePen */
-    position: relative;
-    z-index: 1;
-    transform-origin: top center;
-    will-change: transform;
-    transform: skewX(.001deg);
-  } /* Closing brace for .script-card */
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 1s;
+            animation-duration: 6s;
+        }
 
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+        }
 
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 9s;
+        }
 
-  .script-card img { width: 100%; border-radius: 15px; margin-bottom: 15px; object-fit: cover; /* Ensure image covers the area */ }
-  .script-title { font-size: clamp(1.2rem, 3vw, 1.5rem); margin: 10px 0; }
-  .script-description { font-size: clamp(0.85rem, 2vw, 1rem); margin-bottom: 15px; text-align: center; }
-  .loadstring-input { width: 100%; padding: 10px; border-radius: 10px; border: none; outline: none; margin-bottom: 10px; background: rgba(255,255,255,0.1); color: white; }
-  .copy-btn { padding: 10px 20px; border: none; border-radius: 10px; background: rgba(255,255,255,0.2); color: white; cursor: pointer; transition: background 0.3s; }
-  .copy-btn:hover { background: rgba(255,255,255,0.4); }
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
 
-  /* Textbox focus animation */
-  .loadstring-input:focus {
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.4); /* Subtle glow on focus */
-  }
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 1.5s;
+        }
 
-  /* Search animation */
-  .script-card {
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-    visibility: visible;
-  }
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 3.5s;
+        }
 
-  .script-card.hidden-by-search {
-    opacity: 0;
-    visibility: hidden;
-  }
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 7.5s;
+            animation-duration: 22.5s;
+        }
 
-  .custom-alert {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.3); /* White glassmorphism background */
-    backdrop-filter: blur(15px); /* Slightly reduced blur to avoid being too overpowering */
-    -webkit-backdrop-filter: blur(15px); /* For Safari compatibility */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
-    color: #0f0f15; /* Dark text for contrast on white background */
-    padding: 10px 20px; /* Reduced padding */
-    border-radius: 15px; /* Reduced border-radius */
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    text-align: center;
-  }
-  .custom-alert.show {
-    opacity: 1;
-  }
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 1s;
+            animation-duration: 17.5s;
+        }
 
-  /* Animation for copied loadstring */
-  .script-card.copied-animation {
-    transform: scale(0.95) rotateX(10deg); /* Punch effect: scale down and slight backward bend */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.4); /* Adjusted shadow for punch effect */
-  }
-</style>
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 5.5s;
+        }
 
-<style>
-/* Styles for the animated outline effect */
-.search-bar {
-  position: relative; /* Crucial for positioning the pseudo-element */
-}
-
-/* Removed styles for ::before pseudo-element and outline animation */
-.search-bar::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  width: calc(100% + 10px);
-  height: calc(100% + 10px);
-  border-radius: 20px;
-  background: linear-gradient(
-    90deg,
-    rgba(255,0,0,1),
-    rgba(255,165,0,1),
-    rgba(255,255,0,1),
-    rgba(0,255,0,1),
-    rgba(0,255,255,1),
-    rgba(0,0,255,1),
-    rgba(139,0,139,1),
-    rgba(255,0,0,1)
-  );
-  background-size: 200% 200%;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.search-bar.outline-active::before {
-  opacity: 1;
-  animation: outline-trace 5s linear infinite;
-}
-
-@keyframes outline-trace {
-  0% { background-position: 0% 0%; }
-  25% { background-position: 100% 0%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-/* Styles for search bar hover and shake animations */
-.search-bar {
-  /* Add transition for hover effect */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.search-bar-hover {
-  transform: translateY(-5px); /* Subtle upward lift */
-}
-
-@keyframes floating-enhanced {
-  0% { transform: translateY(0px); }
-  25% { transform: translateY(-15px); } /* Moves up more */
-  50% { transform: translateY(0px); }   /* Back to center */
-  75% { transform: translateY(5px); }   /* Moves down slightly */
-  100% { transform: translateY(0px); }  /* Back to original position */
-}
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
 
 
-.search-bar-shaking {
-  animation: floating-enhanced 3s ease-in-out infinite; /* Enhanced floating effect */
-}
-</style>
-<style>
-/* --- Responsive Adjustments --- */
-
-/* Medium screens (tablets, less than 768px) */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 80px; /* Reduced width for sidebar */
-    padding: 20px 5px;
-  }
-  .sidebar a {
-    font-size: 1.2rem; /* Smaller icons */
-    width: 40px; height: 40px;
-  }
-  .main {
-    padding: 20px 15px;
-  }
-  h1 {
-    font-size: 2rem; /* Smaller title */
-    margin-bottom: 30px;
-  }
-  .search-bar {
-    width: 100%; /* Full width search bar */
-    max-width: 80%; /* Make max-width more flexible */
-    margin-bottom: 30px;
-  }
-  .hub-container {
-    grid-template-columns: repeat(2, 1fr); /* Max 2 items per row for medium screens */
-    gap: 15px;
-  }
-  .script-card {
-    padding: 15px;
-  }
-  .script-title {
-    font-size: 1.3rem;
-  }
-  .script-description {
-    font-size: 0.9rem;
-  }
-}
-
-/* Small screens (mobile, less than 576px) */
-@media (max-width: 576px) {
-  body {
-    flex-direction: column; /* Stack sidebar and main content vertically */
-    overflow-y: auto; /* Allow vertical scrolling */
-  }
-  .sidebar {
-    width: 100%; /* Full width sidebar */
-    height: auto; /* Auto height */
-    flex-direction: row; /* Icons in a row */
-    padding: 15px 10px;
-    border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    justify-content: center; /* Center icons */
-  }
-  .sidebar a {
-    margin: 0 10px; /* Adjust margin for horizontal layout */
-    font-size: 1.5rem;
-    width: 45px; height: 45px;
-  }
-  .main {
-    padding: 20px 10px;
-    justify-content: flex-start; /* Align content to the top */
-  }
-  h1 {
-    font-size: 1.8rem; /* Even smaller title */
-    margin-bottom: 20px;
-  }
-  .search-bar {
-    width: 100%;
-    max-width: none; /* Remove max-width to allow full screen width */
-    margin-bottom: 20px;
-  }
-  .hub-container {
-    grid-template-columns: 1fr; /* Single column for cards */
-    gap: 10px;
-  }
-  .script-card {
-    padding: 15px;
-  }
-  .script-title {
-    font-size: 1.2rem;
-  }
-  .script-description {
-    font-size: 0.85rem;
-  }
-  .loadstring-input, .copy-btn {
-    font-size: 0.9rem; /* Smaller font for inputs and buttons */
-    padding: 6px 10px; /* Adjusted padding for smaller screens */
-  }
-  .custom-alert {
-    padding: 8px 15px; /* Smaller alert padding */
-    font-size: 0.9rem;
-  }
-}
-</style>
+    </style>
 </head>
-<body>
+<body class="text-white min-h-screen overflow-hidden" style="background: linear-gradient(to left, #0f0f15, #000000);">
+    <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    <div class="container mx-auto px-4 py-8" x-data="scriptHub()">
+        <h1 class="text-4xl font-bold text-center mb-8 pt-4 animated-gradient">Sypcer's Scripts</h1>
+        <div class="text-center mb-4">
+            <span id="visitor-count" class="text-gray-400">Loading visitor count...</span>
+        </div>
 
-<div class="sidebar">
-  <a href="https://github.com/sypcerr" target="_blank"><i class="fab fa-github"></i></a>
-  <a href="#" title="sypcer" onclick="copyUsername(this); return false;"><i class="fab fa-discord"></i></a>
-  <!-- Alert moved here -->
-</div>
-
-<div class="main">
-  <h1 class="typing-effect">Sypcer's Scripts</h1>
-<div id="custom-alert" class="custom-alert"></div>
-  <input type="text" class="search-bar" placeholder="Search scripts..." onkeyup="searchScripts(this.value)" id="searchBarInput">
-
-  <div class="hub-container">
-    <!-- Card 1 -->
-    <div class="script-card">
-        <img src='https://github.com/sypcerr/scripts/blob/main/images/ROBEATS.png?raw=true' alt='Robeats'>
-        <div class='script-title'>Robeats</div>
-        <div class='script-description'>A Roblox music client script. Choose from a huge list of preselected Songs or play your own by ID!</div>
-        <input class='loadstring-input' type='text' value="loadstring(game:HttpGet(('https://raw.githubusercontent.com/sypcerr/Robeats/refs/heads/main/script.lua",true))()">
-        <button class='copy-btn' onclick='copyLoadstring(this)'>Copy Loadstring</button>
+        <div class="mb-8">
+            <input
+                type="text"
+                x-model="searchQuery"
+                placeholder="Search scripts..."
+                class="w-full max-w-md mx-auto block px-4 py-2 bg-card border border-card rounded-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+            >
+        </div>
+        <div class="h-[calc(100vh-11rem)] overflow-y-auto scrollbar-hide pb-32">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate__animated animate__fadeInUp" x-show="filteredScripts.length > 0">
+            <template x-for="script in filteredScripts" :key="script.id">
+                <div class="bg-card backdrop-blur-sm rounded-xl p-6 shadow-card hover-shadow-card hover:border-white/20 border-2 border-transparent transition-all duration-300 flex flex-col animate__animated animate__zoomIn">
+                    <div class="flex items-center justify-center h-56 mb-4 flex-shrink-0">
+                        <img :src="script.image" :alt="script.title" class="max-w-full max-h-full object-contain rounded-lg">
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-xl font-semibold mb-2" x-text="script.title"></h3>
+                        <p class="text-gray-300 mb-4" x-text="script.description"></p>
+                    </div>
+                    <button
+                        @click="copyToClipboard(script.id)"
+                        :class="copiedScript === script.id ? 'bg-gray-400 copied-animation' : 'bg-card hover:bg-gray-700'"
+                        class="w-full px-4 py-2 border border-card rounded-lg transition-colors mt-auto"
+                        x-text="copiedScript === script.id ? 'Copied!' : 'Copy Loadstring'"
+                    >
+                    </button>
+                </div>
+            </template>
+        </div>
+        </div>
+        
+        <div x-show="filteredScripts.length === 0" class="text-center text-gray-400 mt-8">
+            No scripts found matching your search.
+        </div>
     </div>
-    <!-- Card 2 -->
-    <div class="script-card">
-          <img src='https://github.com/sypcerr/scripts/blob/main/images/FECOLLECTION.png?raw=true' alt='Sypcer's FE Collection'>
-        <div class='script-title'> Sypcer's FE Collection</div>
-        <div class='script-description'>A collection of custom FE scripts I've created, along with selected scripts made by others.</div>
-        <input class='loadstring-input' type='text' value="loadstring(game:HttpGet(('https://raw.githubusercontent.com/sypcerr/FECollection/refs/heads/main/script.lua'),true))()
-">
-        <button class='copy-btn' onclick='copyLoadstring(this)'>Copy Loadstring</button>
-    </div>
-    <!-- Card 3 -->
-    <div class="script-card">
-        <img src='https://github.com/sypcerr/scripts/blob/main/images/AEGIS.png?raw=true' alt='Aegis'>
-        <div class='script-title'>Aegis [ARCHIVED]</div>
-        <div class='script-description'>Roblox script with an amazing UI and multiple client-sided and FilteringEnabled features.</div>
-        <input class='loadstring-input' type='text' value="loadstring(game:HttpGet(('https://raw.githubusercontent.com/sypcerr/Aegis/refs/heads/main/script'),true))()">
-        <button class='copy-btn' onclick='copyLoadstring(this)'>Copy Loadstring</button>
-      </div>
-    <!-- Card 4 -->
-    <div class="script-card">
-        <img src='https://github.com/sypcerr/scripts/blob/main/images/Float-KATX.png?raw=true' alt='Float://KatX'>
-        <div class='script-title'>Float://KatX</div>
-        <div class='script-description'>Exploit for the Game KatX.</div>
-        <input class='loadstring-input' type='text' value="loadstring(game:HttpGet(('https://raw.githubusercontent.com/sypcerr/Float-KatX/refs/heads/main/script'),true))()">
-        <button class='copy-btn' onclick='copyLoadstring(this)'>Copy Loadstring</button>
-  </div>
-<script>
-    const alertBox = document.getElementById('custom-alert');
-    const searchBarInput = document.getElementById('searchBarInput'); // Correctly reference the search bar input
-    const scriptCards = document.querySelectorAll('.script-card');
 
-    // Function to show custom alert messages
-    function showAlert(message) {
-      console.log("showAlert called with message:", message); // Added log
-      alertBox.textContent = message;
-      alertBox.classList.add('show');
-      setTimeout(() => {
-        alertBox.classList.remove('show');
-      }, 3000); // Alert disappears after 3 seconds
-    }
-
-    // Function to copy username (e.g., Discord username)
-    function copyUsername(element) {
-      const username = "sypcer"; // Hardcoded username for now
-      navigator.clipboard.writeText(username).then(() => {
-        showAlert(`Copied username: ${username}`);
-      }).catch(err => {
-        console.error('Failed to copy username: ', err); // Added log for error
-        showAlert('Failed to copy username.');
-      });
-    }
-// New JavaScript for animated search bar
-
-    // Function to copy loadstring
-    function copyLoadstring(button) {
-      const input = button.previousElementSibling; // Get the input field before the button
-      const loadstring = input.value;
-      navigator.clipboard.writeText(loadstring).then(() => {
-        showAlert('Loadstring copied!');
-        // Add a temporary class for visual feedback on the card
-        const card = button.closest('.script-card');
-        if (card) {
-          card.classList.add('copied-animation');
-          setTimeout(() => {
-            card.classList.remove('copied-animation');
-          }, 1000); // Remove class after 1 second
+    <script>
+        function scriptHub() {
+            return {
+                searchQuery: '',
+                scripts: [
+                    {
+                        id: 1,
+                        title: 'sypcers FE Collection',
+                        description: 'A collection of custom FE scripts I`ve created, along with selected scripts made by others.',
+                        image: 'https://github.com/sypcerr/scripts/blob/main/images/FECOLLECTION.png?raw=true',
+                        loadstring: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/sypcerr/FECollection/refs/heads/main/script.lua",true))()'
+                    },
+                    {
+                        id: 2,
+                        title: 'RoBeats',
+                        description: 'A Roblox Music Client Script - Choose over 50 Songs or play any Audio by their Custom ID',
+                        image: 'https://github.com/sypcerr/scripts/blob/main/images/ROBEATS.png?raw=true',
+                        loadstring: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/sypcerr/Robeats/refs/heads/main/script.lua",true))()'
+                    },
+                    {
+                        id: 3,
+                        title: 'ShaderUI',
+                        description: 'Roblox shader system with 6 presets, Ultra RTX effects, reset button, and toggleable UI.',
+                        image: 'https://github.com/sypcerr/scripts/blob/main/images/shader-ui.png?raw=true',
+                        loadstring: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/sypcerr/scripts/refs/heads/main/ShaderUI", true))()'
+                    },
+                    {
+                        id: 4,
+                        title: 'Aegis [Archived]',
+                        description: 'Aegis is a roblox script, with multiple ClientSided and FilteringEnabled Scripts.',
+                        image: 'https://github.com/sypcerr/scripts/blob/main/images/AEGIS.png?raw=true',
+                        loadstring: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/sypcerr/Robeats/refs/heads/main/script.lua",true))()'
+                    },
+                    {
+                        id: 5,
+                        title: 'PunchFling',
+                        description: 'Punch others to fling them!',
+                        image: 'https://github.com/sypcerr/scripts/blob/main/images/PUNCHFLING.png?raw=true',
+                        loadstring: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/sypcerr/PunchFlingFE/refs/heads/main/script.lua",true))()'
+                    },
+                    {
+                        id: 6,
+                        title: 'Ultimate Fling GUI',
+                        description: 'A sleek control panel for browsing players and unleashing manual or automated fling actions.',
+                        image: 'https://github.com/sypcerr/scripts/blob/main/images/UFGUI.png?raw=true',
+                        loadstring: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/sypcerr/scripts/refs/heads/main/UFGUI", true))()'
+                    },
+                
+                ],
+                get filteredScripts() {
+                    if (!this.searchQuery) return this.scripts;
+                    return this.scripts.filter(script => 
+                        script.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                        script.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                },
+                copiedScript: null,
+                copyToClipboard(id) {
+                    const script = this.scripts.find(s => s.id === id);
+                    navigator.clipboard.writeText(script.loadstring);
+                    this.copiedScript = id;
+                    setTimeout(() => this.copiedScript = null, 2000);
+                }
+            }
         }
-      }).catch(err => {
-        console.error('Failed to copy loadstring: ', err); // Added log for error
-        showAlert('Failed to copy loadstring.');
-      });
-    }
 
-    // Function to search scripts
-        let shakeTimeoutId = null; // Declare for shaking animation timeout
-    function searchScripts(query) {
-      const lowerCaseQuery = query.toLowerCase();
-      const hubContainer = document.querySelector('.hub-container');
-      const scriptCards = Array.from(hubContainer.querySelectorAll('.script-card')); // Convert NodeList to Array
-
-      const matchingCards = [];
-      const nonMatchingCards = [];
-
-      scriptCards.forEach(card => {
-        const title = card.querySelector('.script-title').textContent.toLowerCase();
-        const description = card.querySelector('.script-description').textContent.toLowerCase();
-        if (title.includes(lowerCaseQuery) || description.includes(lowerCaseQuery)) {
-          matchingCards.push(card);
-        } else {
-          nonMatchingCards.push(card);
+        // Function to get ordinal suffix
+        function getOrdinal(n) {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return n + (s[(v - 20) % 10] || s[v] || s[0]);
         }
-      });
 
-      // Clear the container
-      hubContainer.innerHTML = '';
+        // View counter using countapi.xyz
+        fetch('https://api.countapi.xyz/hit/sypcer-scripts/visitors')
+            .then(response => response.json())
+            .then(data => {
+                const ordinal = getOrdinal(data.value);
+                document.getElementById('visitor-count').textContent = `You are the ${ordinal} person to load the site.`;
+            })
+            .catch(error => {
+                document.getElementById('visitor-count').textContent = 'Visitor count unavailable';
+                console.error('Error fetching visitor count:', error);
+            });
 
-      // Append matching cards first
-      matchingCards.forEach(card => {
-        // Ensure hidden-by-search is removed before appending
-        card.classList.remove('hidden-by-search');
-        hubContainer.appendChild(card);
-      });
-
-      // Append non-matching cards, but hide them
-      nonMatchingCards.forEach(card => {
-        card.classList.add('hidden-by-search'); // Add the hidden class
-        hubContainer.appendChild(card);
-      });
-    }
-
-    // Event listener for input changes on the search bar
-    searchBarInput.addEventListener('input', function() {
-      console.log("Search input event triggered. Query:", this.value); // Added log for input event
-      searchScripts(this.value);
-      toggleOutlineAnimation(); // Also toggle outline based on input
-
-      searchBarInput.classList.add('search-bar-shaking'); // Add shaking class
-    });
-
-    // Event listener for focus to ensure animation is active if input has text
-    searchBarInput.addEventListener('focus', function() {
-      toggleOutlineAnimation(); // Keep existing outline animation logic
-      searchBarInput.classList.add('search-bar-hover'); // Add hover class
-    });
-
-    // Event listener for blur to remove animation when focus is lost
-    searchBarInput.addEventListener('blur', function() {
-      console.log("Search blur event triggered"); // Added log
-      searchBarInput.classList.remove('outline-active');
-      searchBarInput.classList.remove('search-bar-hover'); // Remove hover class
-      searchBarInput.classList.remove('search-bar-shaking'); // Stop animation when focus is lost
-    });
-
-    // Function to toggle the outline animation class
-    function toggleOutlineAnimation() {
-      console.log("toggleOutlineAnimation called. Value length:", searchBarInput.value.length); // Added log
-      if (searchBarInput.value.length > 0) {
-        searchBarInput.classList.add('outline-active');
-      } else {
-        searchBarInput.classList.remove('outline-active');
-      }
-    }
-
-    // Initial call to set outline state on page load if there's pre-filled text
-    toggleOutlineAnimation();
-  </script>
+    </script>
 </body>
 </html>
