@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome — My Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #08090c;
+      --surface: #111216;
+      --surface-elevated: #1a1d24;
+      --border: #2a2e38;
+      --text: #f0f2f5;
+      --text-muted: #6b7280;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.4);
+      --accent-2: #22d3ee;
+      --accent-2-glow: rgba(34, 211, 238, 0.3);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(600px 400px at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(500px 400px at 80% 80%, rgba(34, 211, 238, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Grid pattern */
+    body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .project-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.25s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .project-card:nth-child(1) { animation: fadeUp 0.8s ease 0.1s forwards; }
+    .project-card:nth-child(2) { animation: fadeUp 0.8s ease 0.2s forwards; }
+    .project-card:nth-child(3) { animation: fadeUp 0.8s ease 0.3s forwards; }
+
+    .project-card:hover {
+      background: var(--surface-elevated);
+      border-color: var(--accent);
+      transform: translateX(8px);
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .project-card:nth-child(2):hover {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 30px var(--accent-2-glow);
+    }
+
+    .project-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .project-name {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .arrow {
+      font-size: 20px;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+
+    .project-card:hover .arrow {
+      color: var(--text);
+      transform: translateX(4px);
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+      margin-top: 8px;
+      width: fit-content;
+    }
+
+    .project-card:nth-child(2) .badge {
+      background: rgba(34, 211, 238, 0.15);
+      color: var(--accent-2);
+    }
+
+    .footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s;
+    }
+
+    .footer a:hover {
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 16px;
+      }
+
+      .project-card {
+        padding: 16px 20px;
+      }
+
+      .project-name {
+        font-size: 15px;
+      }
+
+      .project-desc {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Portfolio</div>
+      <h1>My <span>Projects</span></h1>
+      <p class="subtitle">
+        A collection of web tools and experiments I've built over time.
+      </p>
+    </header>
+
+    <nav class="projects">
+      <a href="lut-editor-pro.html" class="project-card">
+        <div class="project-info">
+          <div class="project-name">LUT Editor Pro</div>
+          <div class="project-desc">Professional browser-based photo editor with LUT-style presets</div>
+          <span class="badge">Editor</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a href="SteamBundleDB.html" class="project-card">
+        <div class="project-info">
+          <div class="project-name">Steam Bundle DB</div>
+          <div class="project-desc">Browse and filter Steam bundles with advanced filters</div>
+          <span class="badge">Tool</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a href="sypcersscripts.html" class="project-card">
+        <div class="project-info">
+          <div class="project-name">Sypcer's Scripts</div>
+          <div class="project-desc">Roblox script hub with loadstrings for games</div>
+          <span class="badge">Scripts</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a href="websitepool.html" class="project-card">
+        <div class="project-info">
+          <div class="project-name">Random Web Pool</div>
+          <div class="project-desc">Discover random interesting websites from across the internet</div>
+          <span class="badge">Discovery</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <footer class="footer">
+      Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+    </footer>
+  </div>
+</body>
+</html>
