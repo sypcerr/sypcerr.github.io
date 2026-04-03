@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUT Editor Pro - Professional Photo & Video Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://esm.sh/three@0.160.0",
+        "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-dark: #1a1a1a;
+      --bg-darker: #141414;
+      --bg-grey: #2a2a2a;
+      --bg-light-grey: #333333;
+      --bg-hover: #3a3a3a;
+      --border: #444444;
+      --border-light: #555555;
+      --text-primary: #f0f0f0;
+      --text-secondary: #b0b0b0;
+      --text-muted: #888888;
+      --accent: #00b4d8;
+      --accent-hover: #0096b4;
+      --accent-dim: #0077b6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow: rgba(0, 0, 0, 0.4);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --transition: all 0.2s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-darker);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-dark);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.5rem 0.875rem;
+      background: var(--bg-grey);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      transition: var(--transition);
+    }
+
+    .btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-light);
+      color: var(--text-primary);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Main Layout */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar - LUT Library */
+    .sidebar-left {
+      width: 280px;
+      background: var(--bg-dark);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem 0.5rem 2rem;
+      background: var(--bg-grey);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .sidebar-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 0.375rem;
+      background: var(--bg-grey);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .action-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      border-color: var(--border-light);
+    }
+
+    /* LUT Grid */
+    .lut-grid {
+      flex: 1;
+      min-height: 0;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .lut-category-row {
+      margin-bottom: 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .lut-category-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0.375rem 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .lut-items-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.375rem;
+    }
+
+    .lut-item {
+      background: var(--bg-grey);
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.375rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .lut-item:hover {
+      border-color: var(--border-light);
+      background: var(--bg-hover);
+    }
+
+    .lut-item.active {
+      border-color: var(--accent);
+    }
+
+    .lut-item-name {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Center Canvas */
+    .center-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-darker);
+      position: relative;
+      min-width: 0;
+      padding: 1rem;
+    }
+
+    .canvas-wrapper {
+      max-width: 100%;
+      max-height: 100%;
+      display: none;
+    }
+
+    .canvas-wrapper.show {
+      display: block;
+    }
+
+    .canvas-wrapper canvas {
+      max-width: 100%;
+      max-height: calc(100vh - 120px);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 2rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .empty-state.hidden {
+      display: none;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 3rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .upload-area:hover {
+      border-color: var(--accent);
+      background: rgba(0, 180, 216, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 2.5rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .upload-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .upload-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .canvas-actions {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .canvas-btn {
+      padding: 0.5rem;
+      background: rgba(26, 26, 26, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .canvas-btn:hover {
+      background: var(--bg-grey);
+      color: var(--text-primary);
+    }
+
+    .canvas-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Right Panel - Controls */
+    .sidebar-right {
+      width: 280px;
+      background: var(--bg-dark);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .controls-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .control-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .control-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .control-value {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .control-slider {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--bg-grey);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .control-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .control-slider::-moz-range-thumb {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .control-slider::-moz-range-track {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: var(--bg-grey);
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    .control-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    /* Loading Overlay */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(20, 20, 20, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .loading.show {
+      display: flex;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Hidden inputs */
+    #fileInput, #lutFileInput {
+      display: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-darker);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-light);
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 0.375rem;
+      z-index: 100;
+    }
+
+    .mobile-nav-btn {
+      padding: 0.625rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .mobile-nav-btn.active {
+      color: var(--accent);
+      background: rgba(0, 180, 216, 0.15);
+    }
+
+    /* Mobile Panels */
+    .mobile-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-darker);
+      z-index: 200;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .mobile-panel.show {
+      display: block;
+    }
+
+    .mobile-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .mobile-close {
+      background: var(--bg-grey);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar-left, .sidebar-right {
+        width: 240px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar-left, .sidebar-right {
+        display: none;
+      }
+      .mobile-nav {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .center-panel {
+        padding: 0.5rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 0.5rem 0.75rem;
+      }
+      .logo {
+        font-size: 1rem;
+      }
+      .logo-icon {
+        width: 24px;
+        height: 24px;
+      }
+      .btn span {
+        display: none;
+      }
+      .btn {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-magic"></i>
+        </div>
+        <span>LUT Editor</span>
+      </div>
+      <nav class="nav">
+        <button class="btn" id="resetBtn" title="Reset">
+          <i class="fas fa-undo"></i>
+          <span>Reset</span>
+        </button>
+        <button class="btn" id="fullscreenBtn" title="Fullscreen">
+          <i class="fas fa-expand"></i>
+        </button>
+        <button class="btn primary" id="exportBtn" disabled>
+          <i class="fas fa-download"></i>
+          <span>Save</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Left Sidebar - LUT Library -->
+      <aside class="sidebar-left">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">
+            <i class="fas fa-palette"></i>
+            LUTs
+          </h2>
+          <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="lutSearch" placeholder="Search LUTs...">
+          </div>
+          <div class="sidebar-actions">
+            <button class="action-btn" id="loadCustomLut">
+              <i class="fas fa-plus"></i> Add
+            </button>
+            <button class="action-btn" id="clearLut">
+              <i class="fas fa-times"></i> Clear
+            </button>
+          </div>
+        </div>
+        <div class="lut-grid" id="lutList">
+          <!-- LUTs loaded from GitHub -->
+        </div>
+      </aside>
+
+      <!-- Center Canvas -->
+      <section class="center-panel" id="centerPanel">
+        <div class="loading" id="loading">
+          <div class="loading-spinner"></div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">Click or drop image here</div>
+            <div class="upload-hint">JPG, PNG, WEBP</div>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="canvas-actions">
+          <button class="canvas-btn" id="compareBtn" title="Compare">
+            <i class="fas fa-exchange-alt"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Panel - Controls -->
+      <aside class="sidebar-right">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">
+            <i class="fas fa-sliders-h"></i>
+            Adjust
+          </h2>
+        </div>
+        <div class="controls-content">
+          <!-- LUT Strength -->
+          <div class="control-section">
+            <h3 class="section-title">
+              <i class="fas fa-adjust"></i>
+              LUT Strength
+            </h3>
+            <div class="control-row">
+              <span class="control-label">Intensity</span>
+              <span class="control-value" id="intensityVal">100%</span>
+            </div>
+            <input type="range" class="control-slider" id="intensity" min="0" max="100" value="100">
+          </div>
+
+          <!-- Light -->
+          <div class="control-section">
+            <h3 class="section-title">
+              <i class="fas fa-sun"></i>
+              Light
+            </h3>
+            <div class="control-row">
+              <span class="control-label">Brightness</span>
+              <span class="control-value" id="brightnessVal">0</span>
+            </div>
+            <input type="range" class="control-slider" id="brightness" min="-100" max="100" value="0">
+            
+            <div class="control-row" style="margin-top: 0.75rem;">
+              <span class="control-label">Contrast</span>
+              <span class="control-value" id="contrastVal">0</span>
+            </div>
+            <input type="range" class="control-slider" id="contrast" min="-100" max="100" value="0">
+          </div>
+
+          <!-- Color -->
+          <div class="control-section">
+            <h3 class="section-title">
+              <i class="fas fa-palette"></i>
+              Color
+            </h3>
+            <div class="control-row">
+              <span class="control-label">Saturation</span>
+              <span class="control-value" id="saturationVal">0</span>
+            </div>
+            <input type="range" class="control-slider" id="saturation" min="-100" max="100" value="0">
+            
+            <div class="control-row" style="margin-top: 0.75rem;">
+              <span class="control-label">Warmth</span>
+              <span class="control-value" id="warmthVal">0</span>
+            </div>
+            <input type="range" class="control-slider" id="warmth" min="-100" max="100" value="0">
+          </div>
+
+          <!-- Effects -->
+          <div class="control-section">
+            <h3 class="section-title">
+              <i class="fas fa-magic"></i>
+              Effects
+            </h3>
+            <div class="control-row">
+              <span class="control-label">Fade</span>
+              <span class="control-value" id="fadeVal">0</span>
+            </div>
+            <input type="range" class="control-slider" id="fade" min="0" max="100" value="0">
+            
+            <div class="control-row" style="margin-top: 0.75rem;">
+              <span class="control-label">Vignette</span>
+              <span class="control-value" id="vignetteVal">0</span>
+            </div>
+            <input type="range" class="control-slider" id="vignette" min="0" max="100" value="0">
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+      <button class="mobile-nav-btn" id="mobileLutBtn">
+        <i class="fas fa-palette"></i>
+      </button>
+      <button class="mobile-nav-btn" id="mobileControlsBtn">
+        <i class="fas fa-sliders-h"></i>
+      </button>
+    </nav>
+
+    <!-- Mobile LUT Panel -->
+    <div class="mobile-panel" id="mobileLutPanel">
+      <div class="mobile-panel-header">
+        <h3 class="mobile-panel-title">LUTs</h3>
+        <button class="mobile-close" id="closeMobileLut">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="sidebar-header" style="padding: 0; border: none; margin-bottom: 0.5rem;">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" id="mobileLutSearch" placeholder="Search...">
+        </div>
+      </div>
+      <div class="lut-grid" id="mobileLutList"></div>
+    </div>
+
+    <!-- Mobile Controls Panel -->
+    <div class="mobile-panel" id="mobileControlsPanel">
+      <div class="mobile-panel-header">
+        <h3 class="mobile-panel-title">Adjustments</h3>
+        <button class="mobile-close" id="closeMobileControls">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="controls-content" style="padding: 0;">
+        <!-- Same controls as desktop -->
+        <div class="control-section">
+          <h3 class="section-title">LUT Strength</h3>
+          <div class="control-row">
+            <span class="control-label">Intensity</span>
+            <span class="control-value" id="mobileIntensityVal">100%</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileIntensity" min="0" max="100" value="100">
+        </div>
+
+        <div class="control-section">
+          <h3 class="section-title">Light</h3>
+          <div class="control-row">
+            <span class="control-label">Brightness</span>
+            <span class="control-value" id="mobileBrightnessVal">0</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileBrightness" min="-100" max="100" value="0">
+          
+          <div class="control-row" style="margin-top: 0.75rem;">
+            <span class="control-label">Contrast</span>
+            <span class="control-value" id="mobileContrastVal">0</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileContrast" min="-100" max="100" value="0">
+        </div>
+
+        <div class="control-section">
+          <h3 class="section-title">Color</h3>
+          <div class="control-row">
+            <span class="control-label">Saturation</span>
+            <span class="control-value" id="mobileSaturationVal">0</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileSaturation" min="-100" max="100" value="0">
+          
+          <div class="control-row" style="margin-top: 0.75rem;">
+            <span class="control-label">Warmth</span>
+            <span class="control-value" id="mobileWarmthVal">0</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileWarmth" min="-100" max="100" value="0">
+        </div>
+
+        <div class="control-section">
+          <h3 class="section-title">Effects</h3>
+          <div class="control-row">
+            <span class="control-label">Fade</span>
+            <span class="control-value" id="mobileFadeVal">0</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileFade" min="0" max="100" value="0">
+          
+          <div class="control-row" style="margin-top: 0.75rem;">
+            <span class="control-label">Vignette</span>
+            <span class="control-value" id="mobileVignetteVal">0</span>
+          </div>
+          <input type="range" class="control-slider" id="mobileVignette" min="0" max="100" value="0">
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="fileInput" accept="image/*">
+    <input type="file" id="lutFileInput" accept=".cube">
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { LUTCubeLoader } from 'three/addons/loaders/LUTCubeLoader.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+    import { LUTPass } from 'three/addons/postprocessing/LUTPass.js';
+
+    // State
+    const state = {
+      scene: null,
+      camera: null,
+      renderer: null,
+      composer: null,
+      lutPass: null,
+      adjustPass: null,
+      texture: null,
+      mediaWidth: 0,
+      mediaHeight: 0,
+      activeLUT: null,
+      lutIntensity: 1,
+      compareMode: false,
+      adjustments: {
+        brightness: 0,
+        contrast: 0,
+        saturation: 0,
+        warmth: 0,
+        fade: 0,
+        vignette: 0
+      }
+    };
+
+    // LUT Categories
+    let LUT_PRESETS = [];
+    let activeCategory = 'cinematic';
+
+    const LUT_CATEGORIES = {
+      'neutral': 'color',
+      'cinematic': 'cinematic',
+      'warm': 'color',
+      'cool': 'color',
+      'moody': 'moody',
+      'vintage': 'vintage',
+      'teal': 'color',
+      'sunset': 'color',
+      'film': 'cinematic'
+    };
+
+    function getLUTCategory(name) {
+      const lower = name.toLowerCase();
+      for (const key in LUT_CATEGORIES) {
+        if (lower.includes(key)) return LUT_CATEGORIES[key];
+      }
+      return 'cinematic';
+    }
+
+    // Load LUTs from raw GitHub URL
+    async function loadLUTs() {
+      try {
+        // Fetch the directory listing from GitHub API
+        const listResponse = await fetch('https://api.github.com/repos/sypcerr/sypcerr.github.io/contents/assets/luts');
+        const files = await listResponse.json();
+        
+        if (!Array.isArray(files)) {
+          throw new Error('Invalid response');
+        }
+        
+        LUT_PRESETS = files
+          .filter(f => f.name && f.name.toLowerCase().endsWith('.cube'))
+          .map((f, i) => ({
+            id: i + 1,
+            name: f.name.replace('.cube', '').replace(/([A-Z])/g, ' $1').trim(),
+            url: f.download_url || `https://raw.githubusercontent.com/sypcerr/sypcerr.github.io/main/assets/luts/${f.name}`,
+            category: getLUTCategory(f.name.replace('.cube', '').toLowerCase())
+          }));
+
+        console.log('Loaded', LUT_PRESETS.length, 'LUTs');
+        renderLUTs();
+      } catch (e) {
+        console.error('Failed to load LUTs:', e);
+        // Fallback to trying direct URLs
+        LUT_PRESETS = [
+          { id: 1, name: 'Neutral', url: 'https://raw.githubusercontent.com/sypcerr/sypcerr.github.io/main/assets/luts/Neutral.cube', category: 'color' },
+          { id: 2, name: 'Cinematic', url: 'https://raw.githubusercontent.com/sypcerr/sypcerr.github.io/main/assets/luts/Cinematic.cube', category: 'cinematic' },
+        ];
+        renderLUTs();
+      }
+    }
+
+    // Render LUT list
+    function renderLUTs(search = '') {
+      const list = document.getElementById('lutList');
+      const mobileList = document.getElementById('mobileLutList');
+      list.innerHTML = '';
+      mobileList.innerHTML = '';
+
+      // Filter LUTs
+      let filtered = LUT_PRESETS;
+      if (search) {
+        filtered = filtered.filter(l => l.name.toLowerCase().includes(search.toLowerCase()));
+      }
+
+      // Group by category
+      const groups = {};
+      filtered.forEach(lut => {
+        if (!groups[lut.category]) groups[lut.category] = [];
+        groups[lut.category].push(lut);
+      });
+
+      const categories = [
+        { key: 'cinematic', name: 'Cinematic', icon: 'fa-film' },
+        { key: 'color', name: 'Color', icon: 'fa-palette' },
+        { key: 'moody', name: 'Moody', icon: 'fa-cloud' },
+        { key: 'vintage', name: 'Vintage', icon: 'fa-camera' }
+      ];
+
+      categories.forEach(cat => {
+        const luts = groups[cat.key];
+        if (!luts || luts.length === 0) return;
+
+        const categoryHTML = createCategoryHTML(cat, luts);
+        list.innerHTML += categoryHTML;
+        mobileList.innerHTML += categoryHTML;
+      });
+
+      // Add LUT click handlers using addEventListener
+      document.querySelectorAll('.lut-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const lut = LUT_PRESETS.find(l => l.id === parseInt(this.dataset.id));
+          if (lut) applyLUT(lut);
+        });
+      });
+    }
+
+    function createCategoryHTML(cat, luts) {
+      const items = luts.map(lut => `
+        <div class="lut-item ${state.activeLUT === lut.id ? 'active' : ''}" data-id="${lut.id}">
+          <div class="lut-item-name">${lut.name}</div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="lut-category-row">
+          <div class="lut-category-title">
+            <i class="fas ${cat.icon}"></i> ${cat.name}
+          </div>
+          <div class="lut-items-grid">
+            ${items}
+          </div>
+        </div>
+      `;
+    }
+
+
+    // Three.js Setup
+    function initThree() {
+      const canvas = document.getElementById('canvas');
+      const wrapper = document.getElementById('canvasWrapper');
+      
+      state.scene = new THREE.Scene();
+      
+      // Use orthographic camera with aspect ratio
+      const aspect = wrapper.clientWidth / wrapper.clientHeight;
+      state.camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 10);
+      state.camera.position.z = 1;
+
+      state.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+      state.renderer.setPixelRatio(window.devicePixelRatio);
+      state.renderer.setClearColor(0x141414);
+      
+      const width = wrapper.clientWidth || 800;
+      const height = wrapper.clientHeight || 600;
+      state.renderer.setSize(width, height);
+
+      // Composer
+      state.composer = new EffectComposer(state.renderer);
+      const renderPass = new RenderPass(state.scene, state.camera);
+      state.composer.addPass(renderPass);
+
+      // Adjustments shader
+      state.adjustPass = new ShaderPass({
+        uniforms: {
+          tDiffuse: { value: null },
+          brightness: { value: 0 },
+          contrast: { value: 0 },
+          saturation: { value: 0 },
+          warmth: { value: 0 },
+          fade: { value: 0 },
+          vignette: { value: 0 }
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform sampler2D tDiffuse;
+          uniform float brightness, contrast, saturation, warmth, fade, vignette;
+          varying vec2 vUv;
+          
+          void main() {
+            vec4 color = texture2D(tDiffuse, vUv);
+            
+            color.rgb += brightness * 0.01;
+            color.rgb = (color.rgb - 0.5) * (1.0 + contrast * 0.01) + 0.5;
+            
+            float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+            color.rgb = mix(vec3(gray), color.rgb, 1.0 + saturation * 0.01);
+            
+            color.r += warmth * 0.005;
+            color.b -= warmth * 0.005;
+            
+            color.rgb = mix(color.rgb, vec3(0.5), fade * 0.005);
+            
+            float dist = length(vUv - 0.5);
+            color.rgb *= 1.0 - smoothstep(0.4, 0.9, dist) * vignette * 0.01;
+            
+            gl_FragColor = color;
+          }
+        `
+      });
+      state.composer.addPass(state.adjustPass);
+
+      // LUT pass
+      state.lutPass = new LUTPass();
+      state.lutPass.enabled = false;
+      state.composer.addPass(state.lutPass);
+
+      // Resize handler
+      window.addEventListener('resize', onResize);
+
+      animate();
+    }
+
+    function onResize() {
+      const wrapper = document.getElementById('canvasWrapper');
+      const width = wrapper.clientWidth || 800;
+      const height = wrapper.clientHeight || 600;
+      
+      // Update camera aspect
+      const aspect = width / height;
+      state.camera.left = -aspect;
+      state.camera.right = aspect;
+      state.camera.updateProjectionMatrix();
+      
+      state.renderer.setSize(width, height);
+      state.composer.setSize(width, height);
+      
+      // Refit image if loaded
+      if (state.texture) {
+        // Image fitting is already handled by normalized plane geometry in loadImage
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (state.composer) state.composer.render();
+    }
+
+    // Load Image - show immediately without loading spinner
+    async function loadImage(file) {
+      // Don't show loading - local image load is fast
+      const img = new Image();
+      
+      try {
+        await new Promise((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error('Failed to load image'));
+          img.src = URL.createObjectURL(file);
+        });
+      } catch (e) {
+        alert('Failed to load image: ' + e.message);
+        return;
+      }
+      
+      console.log('Image loaded:', img.width, 'x', img.height);
+      
+      state.mediaWidth = img.width;
+      state.mediaHeight = img.height;
+
+      state.texture = new THREE.Texture(img);
+      state.texture.minFilter = THREE.LinearFilter;
+      state.texture.magFilter = THREE.LinearFilter;
+      state.texture.colorSpace = THREE.SRGBColorSpace;
+      state.texture.needsUpdate = true;
+
+      // Remove old mesh
+      const old = state.scene.getObjectByName('plane');
+      if (old) state.scene.remove(old);
+
+      // Create new plane - normalized to fit in camera view
+      const aspect = img.width / img.height;
+      const planeWidth = aspect >= 1 ? 2 : 2 * aspect;
+      const planeHeight = aspect >= 1 ? 2 / aspect : 2;
+      
+      const geo = new THREE.PlaneGeometry(planeWidth, planeHeight);
+      const mat = new THREE.MeshBasicMaterial({ map: state.texture });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.name = 'plane';
+      state.scene.add(mesh);
+
+      // Show canvas wrapper
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('canvasWrapper').classList.add('show');
+      
+      // Resize to fit canvas
+      onResize();
+      
+      document.getElementById('exportBtn').disabled = false;
+      
+      console.log('Image displayed successfully');
+    }
+
+    async function applyLUT(preset) {
+      console.log('Applying LUT:', preset.name);
+      
+      if (!state.texture) {
+        alert('Please upload an image first');
+        return;
+      }
+      
+      try {
+        const loader = new LUTCubeLoader();
+        // Direct URL - same origin when deployed to GitHub Pages
+        const lutUrl = preset.url;
+        console.log('Loading LUT from:', lutUrl);
+        
+        const lut = await new Promise((resolve, reject) => {
+          loader.load(lutUrl, resolve, undefined, reject);
+        });
+        
+        console.log('LUT loaded successfully');
+        
+        // Create new LUT pass
+        if (state.lutPass) {
+          state.composer.removePass(state.lutPass);
+        }
+        
+        state.lutPass = new LUTPass();
+        state.lutPass.lut = lut;
+        state.lutPass.intensity = state.lutIntensity;
+        state.lutPass.enabled = true;
+        state.composer.addPass(state.lutPass);
+
+        state.activeLUT = preset.id;
+        
+        // Update UI - add active class to selected LUT
+        document.querySelectorAll('.lut-item').forEach(el => {
+          if (parseInt(el.dataset.id) === preset.id) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
+          }
+        });
+
+        console.log('LUT applied successfully');
+      } catch (error) {
+        console.error('Failed to load LUT:', error);
+        alert('Failed to load LUT. Check console for details.');
+      }
+    }
+
+    // Update Adjustments
+    function updateAdjustments() {
+      const a = state.adjustments;
+      state.adjustPass.uniforms.brightness.value = a.brightness;
+      state.adjustPass.uniforms.contrast.value = a.contrast;
+      state.adjustPass.uniforms.saturation.value = a.saturation;
+      state.adjustPass.uniforms.warmth.value = a.warmth;
+      state.adjustPass.uniforms.fade.value = a.fade;
+      state.adjustPass.uniforms.vignette.value = a.vignette;
+    }
+
+    // Events
+    function setupEvents() {
+      console.log('Setting up events...');
+      
+      // Upload area click
+      const uploadArea = document.getElementById('uploadArea');
+      if (uploadArea) {
+        uploadArea.addEventListener('click', function() {
+          const fileInput = document.getElementById('fileInput');
+          if (fileInput) fileInput.click();
+        });
+      }
+      
+      // File input change
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+          if (e.target.files && e.target.files[0]) {
+            loadImage(e.target.files[0]);
+          }
+        });
+      }
+
+      // Drag & drop
+      const panel = document.getElementById('centerPanel');
+      if (panel) {
+        panel.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          panel.style.background = '#1a1a2a';
+        });
+        panel.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          panel.style.background = '';
+        });
+        panel.addEventListener('drop', function(e) {
+          e.preventDefault();
+          panel.style.background = '';
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith('image/')) {
+              loadImage(file);
+            }
+          }
+        });
+      }
+
+      // Desktop sliders
+      const desktopControls = [
+        { id: 'intensity', isPercent: true },
+        { id: 'brightness', isPercent: false },
+        { id: 'contrast', isPercent: false },
+        { id: 'saturation', isPercent: false },
+        { id: 'warmth', isPercent: false },
+        { id: 'fade', isPercent: false },
+        { id: 'vignette', isPercent: false }
+      ];
+
+      desktopControls.forEach(ctrl => {
+        const slider = document.getElementById(ctrl.id);
+        const valEl = document.getElementById(ctrl.id + 'Val');
+        
+        if (slider && valEl) {
+          slider.addEventListener('input', function() {
+            const val = parseInt(this.value);
+            
+            if (ctrl.id === 'intensity') {
+              state.lutIntensity = val / 100;
+              if (state.lutPass) state.lutPass.intensity = state.lutIntensity;
+              valEl.textContent = val + '%';
+              
+              // Sync mobile
+              const mobileSlider = document.getElementById('mobileIntensity');
+              const mobileVal = document.getElementById('mobileIntensityVal');
+              if (mobileSlider) mobileSlider.value = val;
+              if (mobileVal) mobileVal.textContent = val + '%';
+            } else {
+              state.adjustments[ctrl.id] = val;
+              valEl.textContent = val;
+              updateAdjustments();
+              
+              // Sync mobile
+              const mobileSlider = document.getElementById('mobile' + ctrl.id.charAt(0).toUpperCase() + ctrl.id.slice(1));
+              const mobileVal = document.getElementById('mobile' + ctrl.id.charAt(0).toUpperCase() + ctrl.id.slice(1) + 'Val');
+              if (mobileSlider) mobileSlider.value = val;
+              if (mobileVal) mobileVal.textContent = val;
+            }
+          });
+        }
+      });
+
+      // Mobile sliders
+      const mobileControls = [
+        { id: 'mobileIntensity', isPercent: true, key: 'intensity' },
+        { id: 'mobileBrightness', isPercent: false, key: 'brightness' },
+        { id: 'mobileContrast', isPercent: false, key: 'contrast' },
+        { id: 'mobileSaturation', isPercent: false, key: 'saturation' },
+        { id: 'mobileWarmth', isPercent: false, key: 'warmth' },
+        { id: 'mobileFade', isPercent: false, key: 'fade' },
+        { id: 'mobileVignette', isPercent: false, key: 'vignette' }
+      ];
+
+      mobileControls.forEach(ctrl => {
+        const slider = document.getElementById(ctrl.id);
+        const valEl = document.getElementById(ctrl.id + 'Val');
+        
+        if (slider && valEl) {
+          slider.addEventListener('input', function() {
+            const val = parseInt(this.value);
+            
+            if (ctrl.key === 'intensity') {
+              state.lutIntensity = val / 100;
+              if (state.lutPass) state.lutPass.intensity = state.lutIntensity;
+              valEl.textContent = val + '%';
+              
+              // Sync desktop
+              const desktopSlider = document.getElementById('intensity');
+              const desktopVal = document.getElementById('intensityVal');
+              if (desktopSlider) desktopSlider.value = val;
+              if (desktopVal) desktopVal.textContent = val + '%';
+            } else {
+              state.adjustments[ctrl.key] = val;
+              valEl.textContent = val;
+              updateAdjustments();
+              
+              // Sync desktop
+              const desktopSlider = document.getElementById(ctrl.key);
+              const desktopVal = document.getElementById(ctrl.key + 'Val');
+              if (desktopSlider) desktopSlider.value = val;
+              if (desktopVal) desktopVal.textContent = val;
+            }
+          });
+        }
+      });
+
+      // Search
+      const lutSearch = document.getElementById('lutSearch');
+      if (lutSearch) {
+        lutSearch.addEventListener('input', function(e) {
+          renderLUTs(e.target.value);
+        });
+      }
+
+      const mobileLutSearch = document.getElementById('mobileLutSearch');
+      if (mobileLutSearch) {
+        mobileLutSearch.addEventListener('input', function(e) {
+          renderLUTs(e.target.value);
+        });
+      }
+
+      // Custom LUT upload
+      const loadCustomLut = document.getElementById('loadCustomLut');
+      if (loadCustomLut) {
+        loadCustomLut.addEventListener('click', function() {
+          const lutFileInput = document.getElementById('lutFileInput');
+          if (lutFileInput) lutFileInput.click();
+        });
+      }
+
+      const lutFileInput = document.getElementById('lutFileInput');
+      if (lutFileInput) {
+        lutFileInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          showLoading(true);
+          const loader = new LUTCubeLoader();
+          loader.load(URL.createObjectURL(file), (lut) => {
+            if (state.lutPass) state.composer.removePass(state.lutPass);
+            state.lutPass = new LUTPass();
+            state.lutPass.lut = lut;
+            state.lutPass.intensity = state.lutIntensity;
+            state.lutPass.enabled = true;
+            state.composer.addPass(state.lutPass);
+            state.activeLUT = 'custom';
+            showLoading(false);
+          }, undefined, function() {
+            showLoading(false);
+            alert('Failed to load LUT file');
+          });
+        });
+      }
+
+      // Clear LUT
+      const clearLut = document.getElementById('clearLut');
+      if (clearLut) {
+        clearLut.addEventListener('click', function() {
+          if (state.lutPass) state.lutPass.enabled = false;
+          state.activeLUT = null;
+          document.querySelectorAll('.lut-item').forEach(el => el.classList.remove('active'));
+        });
+      }
+
+      // Reset button
+      const resetBtn = document.getElementById('resetBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          console.log('Reset button clicked');
+          state.adjustments = { brightness: 0, contrast: 0, saturation: 0, warmth: 0, fade: 0, vignette: 0 };
+          
+          ['brightness', 'contrast', 'saturation', 'warmth', 'fade', 'vignette'].forEach(id => {
+            const slider = document.getElementById(id);
+            const valEl = document.getElementById(id + 'Val');
+            if (slider) slider.value = 0;
+            if (valEl) valEl.textContent = '0';
+            
+            const mobileSlider = document.getElementById('mobile' + id.charAt(0).toUpperCase() + id.slice(1));
+            const mobileVal = document.getElementById('mobile' + id.charAt(0).toUpperCase() + id.slice(1) + 'Val');
+            if (mobileSlider) mobileSlider.value = 0;
+            if (mobileVal) mobileVal.textContent = '0';
+          });
+          
+          const intensitySlider = document.getElementById('intensity');
+          const intensityVal = document.getElementById('intensityVal');
+          if (intensitySlider) intensitySlider.value = 100;
+          if (intensityVal) intensityVal.textContent = '100%';
+          
+          const mobileIntensitySlider = document.getElementById('mobileIntensity');
+          const mobileIntensityVal = document.getElementById('mobileIntensityVal');
+          if (mobileIntensitySlider) mobileIntensitySlider.value = 100;
+          if (mobileIntensityVal) mobileIntensityVal.textContent = '100%';
+          
+          state.lutIntensity = 1;
+          if (state.lutPass) state.lutPass.intensity = 1;
+          updateAdjustments();
+        });
+      }
+
+      // Compare button
+      const compareBtn = document.getElementById('compareBtn');
+      if (compareBtn) {
+        compareBtn.addEventListener('click', function() {
+          state.compareMode = !state.compareMode;
+          this.classList.toggle('active', state.compareMode);
+          if (state.lutPass) state.lutPass.enabled = !state.compareMode;
+        });
+      }
+
+      // Fullscreen button
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        });
+      }
+
+      // Export button
+      const exportBtn = document.getElementById('exportBtn');
+      if (exportBtn) {
+        exportBtn.addEventListener('click', function() {
+          if (!state.renderer) return;
+          
+          // Render current state
+          state.composer.render();
+          
+          // Get canvas data
+          const canvas = document.getElementById('canvas');
+          const dataUrl = canvas.toDataURL('image/png');
+          
+          // Download
+          const link = document.createElement('a');
+          link.download = 'edited-image.png';
+          link.href = dataUrl;
+          link.click();
+        });
+      }
+
+      // Mobile panel buttons
+      const mobileLutBtn = document.getElementById('mobileLutBtn');
+      if (mobileLutBtn) {
+        mobileLutBtn.addEventListener('click', function() {
+          document.getElementById('mobileLutPanel').classList.add('show');
+        });
+      }
+
+      const mobileControlsBtn = document.getElementById('mobileControlsBtn');
+      if (mobileControlsBtn) {
+        mobileControlsBtn.addEventListener('click', function() {
+          document.getElementById('mobileControlsPanel').classList.add('show');
+        });
+      }
+
+      const closeMobileLut = document.getElementById('closeMobileLut');
+      if (closeMobileLut) {
+        closeMobileLut.addEventListener('click', function() {
+          document.getElementById('mobileLutPanel').classList.remove('show');
+        });
+      }
+
+      const closeMobileControls = document.getElementById('closeMobileControls');
+      if (closeMobileControls) {
+        closeMobileControls.addEventListener('click', function() {
+          document.getElementById('mobileControlsPanel').classList.remove('show');
+        });
+      }
+
+      console.log('Events setup complete');
+    }
+
+    function showLoading(show) {
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.toggle('show', show);
+      }
+    }
+
+    // Initialize - wrap in try-catch for debugging
+    function init() {
+      console.log('Initializing LUT Editor...');
+      try {
+        initThree();
+        console.log('Three.js initialized');
+        
+        loadLUTs();
+        console.log('Loading LUTs...');
+        
+        setupEvents();
+        console.log('Events set up');
+        
+        console.log('Initialization complete');
+      } catch (e) {
+        console.error('Initialization error:', e);
+      }
+    }
+
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
